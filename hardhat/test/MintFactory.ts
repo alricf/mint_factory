@@ -143,4 +143,51 @@ describe('MintFactory', () => {
     });
   });
 
+  describe('Withdrawing', () => {
+
+    describe('Success', async () => {
+
+      let transaction: any, result: any, balanceBefore: number;
+
+      beforeEach(async () => {
+        const MintFactory = await ethers.getContractFactory('MintFactory');
+        mintFactory = await MintFactory.deploy(NAME, SYMBOL);
+
+        transaction = await mintFactory.connect(minter).mint(1, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST });
+        result = await transaction.wait();
+
+        balanceBefore = await ethers.provider.getBalance(deployer.address);
+
+        transaction = await mintFactory.connect(deployer).withdraw();
+        result = await transaction.wait();
+      });
+
+      it('deducts contract balance', async () => {
+        expect(await ethers.provider.getBalance(mintFactory.address)).to.equal(0);
+      });
+
+      it('sends funds to the owner', async () => {
+        expect(await ethers.provider.getBalance(deployer.address)).to.be.greaterThan(balanceBefore);
+      });
+
+      it('emits a withdraw event', async () => {
+        expect(transaction).to.emit(mintFactory, 'Withdraw')
+          .withArgs(COST, deployer.address);
+      });
+    });
+
+    describe('Failure', async () => {
+
+      it('prevents non-owner from withdrawing', async () => {
+        const MintFactory = await ethers.getContractFactory('MintFactory');
+        mintFactory = await MintFactory.deploy(NAME, SYMBOL);
+
+        // Mint 1 NFT
+        mintFactory.connect(minter).mint(1, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST });
+
+        // Try to withdraw from the wrong account
+        await expect(mintFactory.connect(minter).withdraw()).to.be.revertedWith('Ownable: caller is not the owner');
+      });
+    });
+  });
 });
