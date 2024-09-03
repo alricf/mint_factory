@@ -46,7 +46,7 @@ describe('MintFactory', () => {
         const MintFactory = await ethers.getContractFactory('MintFactory');
         mintFactory = await MintFactory.deploy(NAME, SYMBOL);
 
-        transaction = await mintFactory.connect(minter).mint(1, 'ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/', { value: COST });
+        transaction = await mintFactory.connect(minter).mint(1, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST });
         result = await transaction.wait();
       });
 
@@ -83,28 +83,28 @@ describe('MintFactory', () => {
         const MintFactory = await ethers.getContractFactory('MintFactory');
         mintFactory = await MintFactory.deploy(NAME, SYMBOL);
 
-        await expect(mintFactory.connect(minter).mint(1, { value: ether(0.1) })).to.be.reverted;
+        await expect(mintFactory.connect(minter).mint(1, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: ether(0.1) })).to.be.reverted;
       });
 
       it('requires at least 1 NFT to be minted', async () => {
         const MintFactory = await ethers.getContractFactory('MintFactory');
         mintFactory = await MintFactory.deploy(NAME, SYMBOL);
 
-        await expect(mintFactory.connect(minter).mint(0, { value: COST })).to.be.reverted;
+        await expect(mintFactory.connect(minter).mint(0, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST })).to.be.reverted;
       });
 
       it('does not allow more NFTs to be minted than max amount', async () => {
         const MintFactory = await ethers.getContractFactory('MintFactory');
         mintFactory = await MintFactory.deploy(NAME, SYMBOL);
 
-        await expect(mintFactory.connect(minter).mint(1000000, { value: COST })).to.be.reverted;
+        await expect(mintFactory.connect(minter).mint(1000000, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST })).to.be.reverted;
       });
 
       it('does not return URIs for invalid tokens', async () => {
         const MintFactory = await ethers.getContractFactory('MintFactory');
         mintFactory = await MintFactory.deploy(NAME, SYMBOL);
 
-        mintFactory.connect(minter).mint(1, { value: COST });
+        mintFactory.connect(minter).mint(1, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST });
 
         await expect(mintFactory.tokenURI('1000000')).to.be.reverted;
       });
