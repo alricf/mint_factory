@@ -83,21 +83,21 @@ describe('MintFactory', () => {
         const MintFactory = await ethers.getContractFactory('MintFactory');
         mintFactory = await MintFactory.deploy(NAME, SYMBOL);
 
-        await expect(mintFactory.connect(minter).mint(1, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: ether(0.1) })).to.be.reverted;
+        await expect(mintFactory.connect(minter).mint(1, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: ether(0.1) })).to.be.revertedWith('insufficient payment');
       });
 
       it('requires at least 1 NFT to be minted', async () => {
         const MintFactory = await ethers.getContractFactory('MintFactory');
         mintFactory = await MintFactory.deploy(NAME, SYMBOL);
 
-        await expect(mintFactory.connect(minter).mint(0, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST })).to.be.reverted;
+        await expect(mintFactory.connect(minter).mint(0, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST })).to.be.revertedWith('must mint at least 1 token');
       });
 
       it('does not allow more NFTs to be minted than max amount', async () => {
         const MintFactory = await ethers.getContractFactory('MintFactory');
         mintFactory = await MintFactory.deploy(NAME, SYMBOL);
 
-        await expect(mintFactory.connect(minter).mint(1000000, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST })).to.be.reverted;
+        await expect(mintFactory.connect(minter).mint(1001, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: ether(1001) })).to.be.revertedWith('max supply minted');
       });
 
       it('does not return URIs for invalid tokens', async () => {
@@ -106,7 +106,15 @@ describe('MintFactory', () => {
 
         mintFactory.connect(minter).mint(1, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/'], { value: COST });
 
-        await expect(mintFactory.tokenURI('1000000')).to.be.reverted;
+        await expect(mintFactory.tokenURI('1000000')).to.be.revertedWith('token does not exist');
+      });
+
+      it('does not mint tokens if the right count of NFT metadata Base URI are not provided', async () => {
+        const MintFactory = await ethers.getContractFactory('MintFactory');
+        mintFactory = await MintFactory.deploy(NAME, SYMBOL);
+
+        // Mint 4 nfts with 3 different NFT metadata base URIs
+        await expect(mintFactory.connect(minter).mint(4, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/', 'ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qh/', 'ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qi/'], { value: ether(4) })).to.be.revertedWith('NFT metadata base URI vs mint amount count mismatch');
       });
     });
 
