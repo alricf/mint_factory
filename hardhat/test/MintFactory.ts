@@ -111,4 +111,28 @@ describe('MintFactory', () => {
     });
 
   });
+
+  describe('Displaying NFTs', () => {
+    let transaction: any, result: any;
+
+    beforeEach(async () => {
+      const MintFactory = await ethers.getContractFactory('MintFactory');
+      mintFactory = await MintFactory.deploy(NAME, SYMBOL);
+
+      // Mint 3 nfts
+      transaction = await mintFactory.connect(minter).mint(3, ['ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qg/', 'ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qh/', 'ipfs/QmQ2jnDYecFhrf3asEWjyjZRX1pZSsNWG3qHzmNDvXa9qi/'], { value: ether(3) });
+
+      result = await transaction.wait();
+    });
+
+    it('returns all the NFTs for a given owner', async () => {
+      let tokenIds = await mintFactory.walletOfOwner(minter.address);
+
+      expect(tokenIds.length).to.equal(3);
+      expect(tokenIds[0].toString()).to.equal('1');
+      expect(tokenIds[1].toString()).to.equal('2');
+      expect(tokenIds[2].toString()).to.equal('3');
+    });
+  });
+
 });
