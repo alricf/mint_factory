@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const { ethers } = require('hardhat');
 
 const tokens = (n: number) => {
-  return ethers.utils.parseUnits(n.toString(), 'ether');
+  return ethers.parseUnits(n.toString(), 'ether'); // ethers.js v6
 };
 
 const ether = tokens;
@@ -67,7 +67,7 @@ describe('MintFactory', () => {
       });
 
       it('updates the contract ether balance', async () => {
-        expect(await ethers.provider.getBalance(mintFactory.address)).to.equal(COST);
+        expect(await ethers.provider.getBalance(mintFactory)).to.equal(COST); // ethers.js v6
       });
 
       it('emits Mint event', async () => {
@@ -163,7 +163,7 @@ describe('MintFactory', () => {
       });
 
       it('deducts contract balance', async () => {
-        expect(await ethers.provider.getBalance(mintFactory.address)).to.equal(0);
+        expect(await ethers.provider.getBalance(mintFactory)).to.equal(0); // ethers.js v6
       });
 
       it('sends funds to the owner', async () => {
