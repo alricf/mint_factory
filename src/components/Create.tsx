@@ -1,13 +1,98 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 interface CreateProps {
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  handleChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void; allData: object[] | null;
+  handleChange: (index: number, event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  nfts: { name: string; description: string; files: File[] | null; blobURLs: string[]; }[]; // Add blobURLs as an array of strings
+  addNFT: (newNFT: { name: string; description: string; files: File[]; blobURLs: string[]; }) => void;
+  removeNFT: (index: number) => void;
+  allData: object[] | null;
   account: string | null;
   signature: string | null;
 }
 
-const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, allData, account, signature }) => {
+const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNFT, removeNFT, allData, account, signature }) => {
+  console.log(nfts);
+  const [currentNFT, setCurrentNFT] = useState<{
+    name: string;
+    description: string;
+    files: File[]; // Use an array of File instead of FileList
+    blobURLs: string[]; // Array to store multiple blob URLs
+  }>({
+    name: '',
+    description: '',
+    files: [], // Initialize as empty array
+    blobURLs: [], // Initialize with an empty array
+  });
+
+  useEffect(() => {
+    console.log('currentNFT.files', currentNFT.files); // Log currentNFT.files whenever the state updates
+  }, [currentNFT.files]);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null); // Add a ref for the file input
+
+  // Handle local form change
+  const handleLocalChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const target = event.target as HTMLInputElement;
+
+    if (target.type === "file" && target.files && target.files.length > 0) {
+      const filesArray: File[] = Array.from(target.files); // Ensuring File[] type for files
+
+      // Create blob URLs for previewing the files
+      const newBlobURLs = filesArray.map((file) => URL.createObjectURL(file));
+
+      setCurrentNFT((prev) => ({
+        ...prev,
+        files: filesArray, // Store files array in the state
+        blobURLs: newBlobURLs, // Store generated blob URLs
+      }));
+    } else {
+      setCurrentNFT((prev) => ({
+        ...prev,
+        [target.name]: target.value, // Handle text inputs (e.g., name, description)
+      }));
+    }
+  };
+
+  // Handle adding new NFT
+  const handleAddNFT = () => {
+    if (currentNFT.name && currentNFT.description && currentNFT.files.length > 0) {
+      const filesArray = [...currentNFT.files]; // Use the array of files
+      const newBlobURLs = filesArray.map((file) => URL.createObjectURL(file)); // Create a blob URL for each file
+
+      addNFT({
+        name: currentNFT.name,
+        description: currentNFT.description,
+        files: filesArray, // Add the array of files
+        blobURLs: newBlobURLs, // Add the generated blob URLs
+      });
+
+      // Clear the form fields after adding the NFT
+      setCurrentNFT({ name: '', description: '', files: [], blobURLs: [] });
+
+      // Clear the file input AFTER the preview has rendered
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''; // Reset file input value after preview
+      }
+    } else {
+      console.error('Please fill in all the fields and upload a file.');
+    }
+  };
+
+  const handleRemoveNFT = (index: number) => {
+    const nftToRemove = nfts[index];
+
+    // Revoke all blob URLs
+    nftToRemove.blobURLs.forEach((url) => {
+      URL.revokeObjectURL(url);
+    });
+
+    removeNFT(index); // Remove the NFT from the list
+  };
+
   // Scroll to display section
   const handleArrowClick = (event: React.MouseEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -21,57 +106,105 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, allData, ac
   };
 
   return (
-    <div className="flex flex-col justify-start items-center min-h-screen pt-40 relative" style={{ backgroundColor: '#FCFFA5' }}>
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="w-full max-w-md p-4 bg-black shadow-md rounded-lg">
+    <div className="flex flex-col justify-start items-center h-full py-4 relative" style={{ backgroundColor: '#FCFFA5' }}>
+      <form onSubmit={handleSubmit} className="w-full max-w-xl p-6 bg-black shadow-md rounded-xl">
         <h2 className="text-center text-2xl font-bold mb-4" style={{ color: '#0EACE2' }}>
-          Mint NFT
+          Mint NFTs
         </h2>
 
-        <div className="mb-3">
-          <label htmlFor="formNFTName" className="block text-sm font-medium text-gray-700" style={{ color: '#0EACE2' }}>
-            Name
-          </label>
-          <input
-            type="text"
-            id="formNFTName"
-            placeholder="Enter text"
-            className="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-            onChange={handleChange}
-          />
+        {/* Fields for new NFT */}
+        <div className="mb-6">
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              name="name"
+              value={currentNFT.name} // Binding the NFT name field
+              onChange={handleLocalChange} // Handle changes for current NFT
+              placeholder="NFT Name"
+              className="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+
+          <div className="mb-3">
+            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              name="description"
+              value={currentNFT.description} // Binding the NFT description field
+              onChange={handleLocalChange} // Handle changes for current NFT
+              placeholder="NFT Description"
+              rows={4}
+              className="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700">Upload File</label>
+            <input
+              type="file"
+              name="files"
+              multiple
+              onChange={handleLocalChange} // Handle file changes dynamically
+              ref={fileInputRef} // Add ref to the file input field
+              className="mt-1 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer"
+            />
+          </div>
+
+          {/* Show list of added NFTs only if there is at least one */}
+          {nfts.length > 0 && (
+            <div className="mb-6">
+              <h3 className="text-lg font-bold mb-2">NFTs to be minted:</h3>
+              <ul>
+                {nfts.map((nft, index) => (
+                  <li key={index} className="flex flex-col justify-between items-center mb-2 border p-2 gap-2">
+
+                    {/* Display all image previews for this NFT */}
+                    <div className="flex flex-wrap gap-1">
+                      {nft.blobURLs.map((blobURL, i) => (
+                        <Image
+                          key={i}
+                          src={blobURL}
+                          alt={`Preview ${i}`}
+                          width={64}
+                          height={64}
+                          className="object-cover my-2 rounded-full"
+                        />
+                      ))}
+                    </div>
+
+                    <span className="text-white">{nft.name}</span>
+
+                    <span className="text-white">{nft.description}</span>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveNFT(index)}
+                      className="text-red-500 border-red-500 border rounded-lg px-2 py-1 hover:bg-red-500 hover:text-white"
+                    >
+                      Delete
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Add NFT Button */}
+          <button
+            type="button"
+            onClick={handleAddNFT}
+            className="w-full bg-[#2BFDB9] text-black text-bold text-2xl py-2 px-4 rounded-full hover:bg-green-500 hover:text-white"
+          >
+            Add NFT
+          </button>
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="formNFTDescription" className="block text-sm font-medium text-gray-700" style={{ color: '#0EACE2' }}>
-            Description
-          </label>
-          <textarea
-            id="formNFTDescription"
-            placeholder="Enter your description"
-            rows={4}
-            className="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="formNFTFiles" className="block text-sm font-medium text-gray-700" style={{ color: '#0EACE2' }}>
-            Upload NFT File(s)
-          </label>
-          <input
-            type="file"
-            multiple
-            id="formNFTFiles"
-            onChange={handleChange}
-            className="mt-1 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer focus:outline-none"
-          />
-        </div>
-
+        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full bg-blue-500 text-black text-bold text-2xl py-2 px-4 rounded-full hover:bg-blue-700 hover:text-white"
         >
-          MINT
+          Mint NFT(s)
         </button>
       </form>
 
