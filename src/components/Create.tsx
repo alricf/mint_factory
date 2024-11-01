@@ -17,20 +17,20 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
   const [currentNFT, setCurrentNFT] = useState<{
     name: string;
     description: string;
-    files: File[]; // Use an array of File instead of FileList
-    blobURLs: string[]; // Array to store multiple blob URLs
+    files: File[]; 
+    blobURLs: string[]; 
   }>({
     name: '',
     description: '',
-    files: [], // Initialize as empty array
-    blobURLs: [], // Initialize with an empty array
+    files: [], 
+    blobURLs: [], 
   });
 
   useEffect(() => {
-    console.log('currentNFT.files', currentNFT.files); // Log currentNFT.files whenever the state updates
+    console.log('currentNFT.files', currentNFT.files);
   }, [currentNFT.files]);
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null); // Add a ref for the file input
+  const fileInputRef = useRef<HTMLInputElement | null>(null); 
 
   // Handle local form change
   const handleLocalChange = (
@@ -46,13 +46,13 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
 
       setCurrentNFT((prev) => ({
         ...prev,
-        files: filesArray, // Store files array in the state
-        blobURLs: newBlobURLs, // Store generated blob URLs
+        files: filesArray, 
+        blobURLs: newBlobURLs, 
       }));
     } else {
       setCurrentNFT((prev) => ({
         ...prev,
-        [target.name]: target.value, // Handle text inputs (e.g., name, description)
+        [target.name]: target.value,
       }));
     }
   };
@@ -60,22 +60,22 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
   // Handle adding new NFT
   const handleAddNFT = () => {
     if (currentNFT.name && currentNFT.description && currentNFT.files.length > 0) {
-      const filesArray = [...currentNFT.files]; // Use the array of files
-      const newBlobURLs = filesArray.map((file) => URL.createObjectURL(file)); // Create a blob URL for each file
+      const filesArray = [...currentNFT.files]; 
+      const newBlobURLs = filesArray.map((file) => URL.createObjectURL(file));
 
       addNFT({
         name: currentNFT.name,
         description: currentNFT.description,
-        files: filesArray, // Add the array of files
-        blobURLs: newBlobURLs, // Add the generated blob URLs
+        files: filesArray, 
+        blobURLs: newBlobURLs, 
       });
 
       // Clear the form fields after adding the NFT
       setCurrentNFT({ name: '', description: '', files: [], blobURLs: [] });
 
-      // Clear the file input AFTER the preview has rendered
+      // Clear the file input after the preview has rendered
       if (fileInputRef.current) {
-        fileInputRef.current.value = ''; // Reset file input value after preview
+        fileInputRef.current.value = '';
       }
     } else {
       console.error('Please fill in all the fields and upload a file.');
@@ -85,12 +85,11 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
   const handleRemoveNFT = (index: number) => {
     const nftToRemove = nfts[index];
 
-    // Revoke all blob URLs
     nftToRemove.blobURLs.forEach((url) => {
       URL.revokeObjectURL(url);
     });
 
-    removeNFT(index); // Remove the NFT from the list
+    removeNFT(index);
   };
 
   // Scroll to display section
@@ -119,8 +118,8 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
             <input
               type="text"
               name="name"
-              value={currentNFT.name} // Binding the NFT name field
-              onChange={handleLocalChange} // Handle changes for current NFT
+              value={currentNFT.name}
+              onChange={handleLocalChange}
               placeholder="NFT Name"
               className="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             />
@@ -130,8 +129,8 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
             <label className="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               name="description"
-              value={currentNFT.description} // Binding the NFT description field
-              onChange={handleLocalChange} // Handle changes for current NFT
+              value={currentNFT.description}
+              onChange={handleLocalChange}
               placeholder="NFT Description"
               rows={4}
               className="text-black mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
@@ -144,8 +143,8 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
               type="file"
               name="files"
               multiple
-              onChange={handleLocalChange} // Handle file changes dynamically
-              ref={fileInputRef} // Add ref to the file input field
+              onChange={handleLocalChange} 
+              ref={fileInputRef} 
               className="mt-1 block w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 cursor-pointer"
             />
           </div>
@@ -158,7 +157,6 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
                 {nfts.map((nft, index) => (
                   <li key={index} className="flex flex-col justify-between items-center mb-2 border p-2 gap-2">
 
-                    {/* Display all image previews for this NFT */}
                     <div className="flex flex-wrap gap-1">
                       {nft.blobURLs.map((blobURL, i) => (
                         <Image
@@ -199,7 +197,7 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
           </button>
         </div>
 
-        {/* Submit Button */}
+        {/* Mint Button */}
         <button
           type="submit"
           className="w-full bg-blue-500 text-black text-bold text-2xl py-2 px-4 rounded-full hover:bg-blue-700 hover:text-white"
@@ -231,7 +229,6 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
           </div>
         )
       }
-
 
     </div>
   );
