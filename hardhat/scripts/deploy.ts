@@ -5,8 +5,8 @@ async function main() {
   const MintFactory = await hre.ethers.getContractFactory('MintFactory');
   let mintFactory = await MintFactory.deploy('Mint Factory', 'MF');
 
-  await mintFactory.deployed();
-  console.log(`MintFactory deployed to: ${mintFactory.address}\n`);
+  await mintFactory.waitForDeployment();
+  console.log(`MintFactory deployed to: ${mintFactory.target}\n`); // v6
 }
 
 main().catch((error) => {
