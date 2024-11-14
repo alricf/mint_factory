@@ -180,7 +180,7 @@ export default function Home() {
 
       // Send the minting transaction
       const tx = await mintFactory.mint(metadataBaseURIs.length, metadataBaseURIs, {
-        value: ethers.parseUnits(metadataBaseURIs.length.toString(), 'ether'),
+        value: ethers.parseUnits(metadataBaseURIs.length.toString(), 'wei'),
       });
       await tx.wait();
 

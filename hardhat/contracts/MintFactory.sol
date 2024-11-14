@@ -8,7 +8,7 @@ import "./Ownable.sol";
 contract MintFactory is ERC721Enumerable, Ownable {
     using Strings for uint256;
 
-    uint256 public cost = 1 ether;
+    uint256 public cost = 1 wei;
     string public baseExtension = ".json";
     uint256 maxSupply = 1000;
 
