@@ -10,9 +10,11 @@ interface CreateProps {
   allData: object[] | null;
   account: string | null;
   signature: string | null;
+  totalNFTs: number | null;
+  setTotalNFTs: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNFT, removeNFT, allData, account, signature }) => {
+const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNFT, removeNFT, allData, account, signature, totalNFTs, setTotalNFTs }) => {
   console.log(nfts);
   const [currentNFT, setCurrentNFT] = useState<{
     name: string;
@@ -60,6 +62,7 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
   // Handle adding new NFT
   const handleAddNFT = () => {
     if (currentNFT.name && currentNFT.description && currentNFT.files.length > 0) {
+      setTotalNFTs((prevCounter: any) => prevCounter + currentNFT.files.length);
       const filesArray = [...currentNFT.files]; 
       const newBlobURLs = filesArray.map((file) => URL.createObjectURL(file));
 
@@ -84,6 +87,8 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
 
   const handleRemoveNFT = (index: number) => {
     const nftToRemove = nfts[index];
+
+    setTotalNFTs((prevCounter: any) => prevCounter - nftToRemove.blobURLs.length);
 
     nftToRemove.blobURLs.forEach((url) => {
       URL.revokeObjectURL(url);
@@ -184,6 +189,7 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
                   </li>
                 ))}
               </ul>
+              <h3 className="text-lg font-bold mb-2 text-center">TOTAL COST: {totalNFTs} NFT(s) x 1 wei = {totalNFTs} wei</h3>
             </div>
           )}
 

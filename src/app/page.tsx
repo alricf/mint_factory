@@ -27,6 +27,7 @@ export default function Home() {
   const [message, setMessage] = useState<string | null>(null);
   const [allData, setAllData] = useState<object[] | null>(null);
   const [totalSupply, setTotalSupply] = useState<number | null>(null);
+  const [totalNFTs, setTotalNFTs] = useState<null | number>(null);
 
   const read = async () => {
     if (account !== null) {
@@ -130,6 +131,8 @@ export default function Home() {
       return;
     }
 
+    setTotalNFTs(null);
+
     try {
       let metadataBaseURIs: string[] = [];
 
@@ -215,6 +218,8 @@ export default function Home() {
               allData={allData}
               account={account}
               signature={signature}
+              totalNFTs={totalNFTs}
+              setTotalNFTs={setTotalNFTs}
             />
             <Display allData={allData} />
           </>
