@@ -225,13 +225,27 @@ export default function Home() {
           </>
           :
           (
-            <div className="flex flex-col justify-center items-center h-screen bg-[#2BFDB9] pb-40">
-              <h1 className="text-7xl font-bold text-indigo-800 mb-4">
-                WELCOME TO MINT FACTORY
-              </h1>
-              <p className="text-2xl text-black">
-                Please connect your wallet to get started.
-              </p>
+            <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-r from-[#2BFDB9] to-[#1DE9B6] px-6">
+              <div className="max-w-5xl text-center bg-white rounded-xl shadow-lg p-8">
+                <h1 className="text-5xl md:text-6xl font-extrabold text-[#FD2B6A] mb-6">
+                  Welcome to Mint Factory
+                </h1>
+                <p className="text-lg md:text-xl text-gray-700 leading-7 mb-4">
+                  Mint Factory is your gateway to effortless NFT creation and ownership verification. This decentralized application (dApp) empowers anyone to mint NFTs (Non-Fungible Tokens) directly to their wallet, ensuring secure ownership and authenticity.
+                </p>
+                <p className="text-lg md:text-xl text-gray-700 leading-7 mb-4">
+                  Your NFTs are stored on the decentralized IPFS (InterPlanetary File System) via Pinata, offering unparalleled security and accessibility.
+                </p>
+                <p className="text-lg md:text-xl text-gray-700 leading-7 mb-6">
+                  Whether you’re building a digital art collection or need bulk NFT creation, Mint Factory makes it seamless. Provide a name and description for your NFTs—customize each one or use a unified approach for all.
+                </p>
+                <p className="text-lg md:text-xl text-[#FD2B6A] font-semibold mb-8">
+                  Connect your wallet to start minting today!
+                </p>
+                <button className="bg-[#FD2B6A] text-white text-lg md:text-xl font-medium py-3 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none transition duration-300" onClick={connectWallet}>
+                  Connect Wallet
+                </button>
+              </div>
             </div>
           )
       }
