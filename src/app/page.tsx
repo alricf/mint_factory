@@ -242,9 +242,6 @@ export default function Home() {
                 <p className="text-lg md:text-xl text-[#FD2B6A] font-semibold mb-8">
                   Connect your wallet to start minting today!
                 </p>
-                <button className="bg-[#FD2B6A] text-white text-lg md:text-xl font-medium py-3 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none transition duration-300" onClick={connectWallet}>
-                  Connect Wallet
-                </button>
               </div>
             </div>
           )
