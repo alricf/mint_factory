@@ -10,7 +10,7 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({ account, connectHandler, disconnectHandler }) => {
   return (
-    <nav className="py-2 px-12 flex justify-between items-center bg-[#452146] text-[#0EACE2] sticky top-0 z-50 border-black border-4">
+    <nav className="py-2 px-12 flex justify-between items-center bg-[#452146] text-[#2BFDB9] sticky top-0 z-50 border-black border-4">
       <div className="flex items-center flex-grow-0">
         <Image
           alt="logo"
@@ -38,7 +38,7 @@ const Navigation: React.FC<NavigationProps> = ({ account, connectHandler, discon
         ) : (
           <button
             onClick={connectHandler}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            className="bg-blue-500 hover:bg-blue-700 hover:text-[#2BFDB9] text-white font-bold py-2 px-4 rounded">
             Connect Wallet
           </button>
         )}
