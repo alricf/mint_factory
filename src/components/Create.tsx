@@ -113,7 +113,7 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
     <div className="flex flex-col justify-start items-center h-full py-4 relative" style={{ backgroundColor: '#FCFFA5' }}>
       <form onSubmit={handleSubmit} className="w-full max-w-xl p-6 bg-black shadow-md rounded-xl">
         <h2 className="text-center text-2xl font-bold mb-4" style={{ color: '#0EACE2' }}>
-          Mint NFTs
+          Mint NFT(s)
         </h2>
 
         {/* Fields for new NFT */}
@@ -199,7 +199,7 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
             onClick={handleAddNFT}
             className="w-full bg-[#2BFDB9] text-black text-bold text-2xl py-2 px-4 rounded-full hover:bg-green-500 hover:text-white"
           >
-            Add NFT
+            Add NFT(s)
           </button>
         </div>
 
