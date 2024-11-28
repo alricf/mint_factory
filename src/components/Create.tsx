@@ -157,7 +157,7 @@ const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNF
           {/* Show list of added NFTs only if there is at least one */}
           {nfts.length > 0 && (
             <div className="mb-6">
-              <h3 className="text-lg font-bold mb-2">NFTs to be minted:</h3>
+              <h3 className="text-lg font-bold mb-2">NFT(s) to be minted:</h3>
               <ul>
                 {nfts.map((nft, index) => (
                   <li key={index} className="flex flex-col justify-between items-center mb-2 border p-2 gap-2">
