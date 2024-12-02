@@ -4,6 +4,11 @@
 
 Mint Factory is a decentralized application (dApp) that allows anyone to create a NFT (Non-Fungible Token) that is minted directly to their wallet. The application also helps verify that a NFT is owned by a user. The NFTs are stored on the decentralized IPFS (InterPlanetary File System) via Pinata.
 
+## Demo
+<video src="assets/videos/local-demo.mov" controls="controls" style="max-width: 100%;">
+  Your browser does not support the video tag.
+</video>
+
 ## Pre-Requisites (Local)
 - Free pinata account to create environment variables for a .env file listed below (also listed in the .env.example file):
   - PINATA_JWT
