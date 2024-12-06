@@ -37,3 +37,6 @@ Mint Factory is a decentralized application (dApp) that allows anyone to create 
   - Click "Clear".
 
 - Deploy the deploy.ts script everytime the hardhat node is restarted.
+
+## Base Sepolia Contract Address
+- 0x5d4c097196E448eE7983332da8C0660D7DDAFDe1
