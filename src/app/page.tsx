@@ -230,6 +230,21 @@ export default function Home() {
                 <h1 className="text-5xl md:text-6xl font-extrabold text-[#FD2B6A] mb-6">
                   Welcome to Mint Factory
                 </h1>
+
+                {/* Video Section */}
+                <div className="relative overflow-hidden rounded-lg shadow-md mb-8">
+                  <video
+                    className="w-full h-full object-cover"
+                    autoPlay
+                    loop
+                    muted
+                  >
+                    <source src="/assets/videos/local-demo.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+
+                {/* Content Section */}
                 <p className="text-lg md:text-xl text-gray-700 leading-7 mb-4">
                   Mint Factory is your gateway to effortless NFT creation and ownership verification. This decentralized application (dApp) empowers anyone to mint NFTs (Non-Fungible Tokens) directly to their wallet, ensuring secure ownership and authenticity.
                 </p>
