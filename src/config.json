@@ -3,5 +3,10 @@
     "mintFactory": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3"
     }
+  },
+  "84531": {
+    "mintFactory": {
+      "address": "0x5d4c097196E448eE7983332da8C0660D7DDAFDe1"
+    }
   }
 }
