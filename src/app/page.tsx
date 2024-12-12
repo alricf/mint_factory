@@ -264,6 +264,9 @@ export default function Home() {
                     <source src="/assets/videos/local-demo.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
+                  <p className="text-black py-2 text-center font-bold">
+                    Local Hardhat Demo
+                  </p>
                 </div>
 
                 {/* Content Section */}
