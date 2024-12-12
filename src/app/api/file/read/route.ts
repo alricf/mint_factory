@@ -4,6 +4,9 @@ import { ethers } from 'ethers';
 import MINT_FACTORY_ABI from '../../../../abis/MintFactory.json';
 import config from '../../../../config.json';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 export const configuration = {
   api: {
     bodyParser: false,
@@ -15,19 +18,33 @@ export async function POST(request: NextRequest) {
     // Parse the request body as JSON
     const body = await request.json();
 
-    // Extract account from the request body
+    // Extract account and chainId from the request body
     const account: string = body.account;
+    const chainId: string = body.chainId;
+    
+    let provider: any = null;
 
     // Type validation
     if (typeof account !== 'string') {
       return NextResponse.json({ error: 'Invalid input, expected a string.' }, { status: 400 });
     }
 
-    // Connect to the local Hardhat network
-    const provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
+    if (chainId === '31337') {
+      // Connect to the local Hardhat network
+      provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
+    } else if (chainId === '8453') {
+      // Connect to Base Sepolia network
+      provider = new ethers.JsonRpcProvider(`https://base-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`);
+    } else {
+      throw new Error('Unsupported network');
+    }
 
     // Initiate contract
-    const mintFactory = new ethers.Contract(config[31337].mintFactory.address, MINT_FACTORY_ABI, provider);
+    const mintFactory = new ethers.Contract(
+      config[chainId].mintFactory.address, 
+      MINT_FACTORY_ABI, 
+      provider
+    );
 
     // Get token URIs owned by account
     const tokenURIsOwnedByAccount = await mintFactory.walletOfOwner(account);

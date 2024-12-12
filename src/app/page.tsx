@@ -28,6 +28,7 @@ export default function Home() {
   const [allData, setAllData] = useState<object[] | null>(null);
   const [totalSupply, setTotalSupply] = useState<number | null>(null);
   const [totalNFTs, setTotalNFTs] = useState<null | number>(null);
+  const [chainId, setChainId] = useState<string | null>(null);
 
   const read = async () => {
     if (account !== null) {
@@ -37,7 +38,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ account }),
+        body: JSON.stringify({ account, chainId }),
       });
       const data = await response.json();
 
@@ -69,17 +70,27 @@ export default function Home() {
       const provider = new ethers.BrowserProvider(instance); // v6
       setProvider(provider);
 
-      const signer = await provider.getSigner();
+      // Get the network and chainId
+      const network = await provider.getNetwork();
+      const chainId = network.chainId.toString();
+      setChainId(chainId);
 
-      const address = await signer.getAddress();
-      setAccount(address);
+      if (chainId === '31337' || chainId === '8453') {
+        const signer = await provider.getSigner();
 
-      // Sign a message for proof of intent
-      const message = `${address} is minting NFT(s) using Mint Factory`;
-      setMessage(message);
+        const address = await signer.getAddress();
+        setAccount(address);
 
-      const signature = await signer.signMessage(message);
-      setSignature(signature);
+        // Sign a message for proof of intent
+        const message = `${address} is minting NFT(s) using Mint Factory`;
+        setMessage(message);
+
+        const signature = await signer.signMessage(message);
+        setSignature(signature);
+      } else {
+        window.alert('Unsupported network');
+        window.location.reload();
+      }
 
     } catch (error) {
       console.error("Failed to connect wallet:", error);
@@ -171,24 +182,35 @@ export default function Home() {
 
       metadataBaseURIs = promisesCollection.flat();
 
-      const signer2 = await provider.getSigner();
-      const mintFactory = new ethers.Contract(
-        config[31337].mintFactory.address,
-        MINT_FACTORY_ABI,
-        signer2
-      );
+      // Get the network and chainId
+      const network = await provider.getNetwork();
+      const chainId = network.chainId.toString();
+      setChainId(chainId);
 
-      let totalSupply = await mintFactory.totalSupply();
-      setTotalSupply(totalSupply);
+      if (chainId === '31337' || chainId === '8453') {
+        const signer2 = await provider.getSigner();
+        const mintFactory = new ethers.Contract(
+          config[chainId].mintFactory.address,
+          MINT_FACTORY_ABI,
+          signer2
+        );
 
-      // Send the minting transaction
-      const tx = await mintFactory.mint(metadataBaseURIs.length, metadataBaseURIs, {
-        value: ethers.parseUnits(metadataBaseURIs.length.toString(), 'wei'),
-      });
-      await tx.wait();
+        let totalSupply = await mintFactory.totalSupply();
+        setTotalSupply(totalSupply);
 
-      totalSupply = await mintFactory.totalSupply();
-      setTotalSupply(totalSupply);
+        // Send the minting transaction
+        const tx = await mintFactory.mint(metadataBaseURIs.length, metadataBaseURIs, {
+          value: ethers.parseUnits(metadataBaseURIs.length.toString(), 'wei'),
+        });
+        await tx.wait();
+
+        totalSupply = await mintFactory.totalSupply();
+        setTotalSupply(totalSupply);
+      } else {
+        window.alert('Unsupported network');
+        window.location.reload();
+      }
+
     } catch (error) {
       console.error('Error sending files to server:', error);
     }
@@ -226,7 +248,7 @@ export default function Home() {
           :
           (
             <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-r from-[#2BFDB9] to-[#1DE9B6] px-6">
-              <div className="max-w-5xl text-center bg-white rounded-xl shadow-lg p-8">
+              <div className="max-w-5xl text-center bg-white rounded-xl shadow-lg p-8 my-20">
                 <h1 className="text-5xl md:text-6xl font-extrabold text-[#FD2B6A] mb-6">
                   Welcome to Mint Factory
                 </h1>
