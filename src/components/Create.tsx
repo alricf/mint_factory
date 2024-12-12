@@ -15,7 +15,6 @@ interface CreateProps {
 }
 
 const Create: React.FC<CreateProps> = ({ handleSubmit, handleChange, nfts, addNFT, removeNFT, allData, account, signature, totalNFTs, setTotalNFTs }) => {
-  console.log(nfts);
   const [currentNFT, setCurrentNFT] = useState<{
     name: string;
     description: string;

@@ -166,8 +166,6 @@ export default function Home() {
         if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
         const data = await response.json();
-        console.log(data, 'dataFE');
-        console.log(data.uploadedMetadataFileBaseURI, 'data.uploadedMetadataFileBaseURI');
 
         const baseURIs = data.uploadedMetadataFileBaseURIs.flatMap((uri: string) => {
           return uri;
