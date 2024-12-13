@@ -75,7 +75,7 @@ export default function Home() {
       const chainId = network.chainId.toString();
       setChainId(chainId);
 
-      if (chainId === '31337' || chainId === '8453') {
+      if (chainId === '31337' || chainId === '84532') {
         const signer = await provider.getSigner();
 
         const address = await signer.getAddress();
@@ -185,7 +185,7 @@ export default function Home() {
       const chainId = network.chainId.toString();
       setChainId(chainId);
 
-      if (chainId === '31337' || chainId === '8453') {
+      if (chainId === '31337' || chainId === '84532') {
         const signer2 = await provider.getSigner();
         const mintFactory = new ethers.Contract(
           config[chainId].mintFactory.address,

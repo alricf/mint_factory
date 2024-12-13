@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     if (chainId === '31337') {
       // Connect to the local Hardhat network
       provider = new ethers.JsonRpcProvider('http://127.0.0.1:8545');
-    } else if (chainId === '8453') {
+    } else if (chainId === '84532') {
       // Connect to Base Sepolia network
       provider = new ethers.JsonRpcProvider(`https://base-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY}`);
     } else {
