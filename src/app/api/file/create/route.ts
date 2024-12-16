@@ -3,12 +3,6 @@ import { pinata } from "../../../../../utils/config";
 import { ethers } from 'ethers';
 import { v4 as uuidv4 } from 'uuid';
 
-export const configuration = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(request: NextRequest) {
   try {
     // Gather data

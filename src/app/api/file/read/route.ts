@@ -7,12 +7,6 @@ import config from '../../../../config.json';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export const configuration = {
-  api: {
-    bodyParser: false,
-  },
-};
-
 export async function POST(request: NextRequest) {
   try {
     // Parse the request body as JSON
