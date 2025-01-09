@@ -4,7 +4,9 @@ import './globals.css';
 import React, { useEffect, useState, ChangeEvent, FormEvent } from 'react';
 import { ethers } from 'ethers';
 import MINT_FACTORY_ABI from '../abis/MintFactory.json';
-import config from '../config.json';
+import configJSON from '../config.json';
+
+const config: ConfigType = configJSON;
 
 // Components
 import Navigation from '@/components/Navigation';
@@ -13,6 +15,16 @@ import Display from '@/components/Display';
 
 // Wallet connection library
 import Web3Modal from 'web3modal';
+
+interface MintFactoryConfig {
+  mintFactory: {
+    address: string;
+  };
+}
+
+type ConfigType = {
+  [chainId: string]: MintFactoryConfig;
+};
 
 export default function Home() {
   const [nfts, setNFTs] = useState<{
@@ -30,32 +42,31 @@ export default function Home() {
   const [totalNFTs, setTotalNFTs] = useState<null | number>(null);
   const [chainId, setChainId] = useState<string | null>(null);
 
-  const read = async () => {
-    if (account !== null) {
-      // Sending account to server
-      const response = await fetch('/api/file/read', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ account, chainId }),
-      });
-      const data = await response.json();
-
-      // Check if data contains allData
-      if (Array.isArray(data)) {
-        setAllData(data);
-      } else if (data.allData && Array.isArray(data.allData)) {
-        setAllData(data.allData);
-      } else {
-        console.error('Expected an array but received:', data);
-      }
-    }
-  };
-
   useEffect(() => {
+    const read = async () => {
+      if (account !== null) {
+        // Sending account to server
+        const response = await fetch('/api/file/read', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ account, chainId }),
+        });
+        const data = await response.json();
+
+        // Check if data contains allData
+        if (Array.isArray(data)) {
+          setAllData(data);
+        } else if (data.allData && Array.isArray(data.allData)) {
+          setAllData(data.allData);
+        } else {
+          console.error('Expected an array but received:', data);
+        }
+      }
+    };
     read();
-  }, [account, totalSupply]);
+  }, [account, totalSupply, chainId]);
 
   // Wallet connect handler
   const connectWallet = async () => {
