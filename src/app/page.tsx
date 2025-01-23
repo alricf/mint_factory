@@ -288,7 +288,18 @@ export default function Home() {
                 <p className="text-lg md:text-xl text-gray-700 leading-7 mb-6">
                   Whether you’re building a digital art collection or need bulk NFT creation, Mint Factory makes it seamless. Provide a name and description for your NFTs—customize each one or use a unified approach for all.
                 </p>
-                <p className="text-lg md:text-xl text-[#FD2B6A] font-semibold mb-8">
+                <p className="text-lg md:text-xl text-black font-semibold mb-8">
+                  Base Sepolia Contract Address:&nbsp;
+                  <a
+                    href="https://sepolia.basescan.org/address/0x5d4c097196e448ee7983332da8c0660d7ddafde1"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline font-medium"
+                  >
+                    0x5d4c097196E448eE7983332da8C0660D7DDAFDe1
+                  </a>
+                </p>
+                <p className="text-xl md:text-2xl text-[#FD2B6A] font-semibold mb-8">
                   Connect your wallet to start minting today!
                 </p>
               </div>
